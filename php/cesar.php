@@ -1,35 +1,69 @@
 <?php
 // php/cesar.php
 
-function cesar_encrypt($text, $shift = 5){
-    $result = "";
-    $shift = $shift % 26;
-    for($i = 0; $i < strlen($text); $i++){
-        $char = $text[$i];
-        if($char >= 'A' && $char <= 'Z'){
-            $result .= chr((ord($char) - 65 + $shift) % 26 + 65);
-        } elseif($char >= 'a' && $char <= 'z'){
-            $result .= chr((ord($char) - 97 + $shift) % 26 + 97);
-        } else{
-            $result .= $char;
+// ================================
+// Alfabeto español (27 letras: incluye ñ)
+// ================================
+$ABC = "abcdefghijklmnñopqrstuvwxyz";
+$A = mb_strlen($ABC, 'UTF-8'); // Tamaño del alfabeto: 27
+
+// ================================
+// Función de cifrado César
+// Fórmula: C = m + [k mod A]
+// ================================
+function cesar_encrypt($mensaje, $clave = 5){
+    global $ABC, $A;
+    $C = ""; // Variable donde se guardará el mensaje cifrado
+
+    // Recorremos cada carácter del mensaje
+    for($i = 0; $i < mb_strlen($mensaje, 'UTF-8'); $i++){
+        $m = mb_substr($mensaje, $i, 1, 'UTF-8'); // letra actual
+        $m_lower = mb_strtolower($m, 'UTF-8');    // convertimos a minúscula para buscar
+        $pos = mb_strpos($ABC, $m_lower, 0, 'UTF-8'); // buscamos posición de m en el alfabeto
+
+        if($pos !== false){
+            // C = m + [k mod A]
+            $C_index = ($pos + ($clave % $A)) % $A;
+            $C_char = mb_substr($ABC, $C_index, 1, 'UTF-8');
+
+            // Conservamos mayúsculas si la letra original era mayúscula
+            $C .= ctype_upper($m) ? mb_strtoupper($C_char, 'UTF-8') : $C_char;
+        } else {
+            // Si no es letra del alfabeto, se deja igual
+            $C .= $m;
         }
     }
-    return $result;
+
+    return $C; // Retornamos el mensaje cifrado
 }
 
-function cesar_decrypt($text, $shift = 5){
-    $result = "";
-    $shift = $shift % 26;
-    for($i = 0; $i < strlen($text); $i++){
-        $char = $text[$i];
-        if($char >= 'A' && $char <= 'Z'){
-            $result .= chr((ord($char) - 65 - $shift + 26) % 26 + 65);
-        } elseif($char >= 'a' && $char <= 'z'){
-            $result .= chr((ord($char) - 97 - $shift + 26) % 26 + 97);
-        } else{
-            $result .= $char;
+// ================================
+// Función de descifrado César
+// Fórmula: m = C - [k mod A]
+// ================================
+function cesar_decrypt($C_text, $clave = 5){
+    global $ABC, $A;
+    $mensaje = ""; // Variable donde se guardará el mensaje descifrado
+
+    // Recorremos cada carácter del mensaje cifrado
+    for($i = 0; $i < mb_strlen($C_text, 'UTF-8'); $i++){
+        $C = mb_substr($C_text, $i, 1, 'UTF-8'); // letra cifrada
+        $C_lower = mb_strtolower($C, 'UTF-8');    // convertimos a minúscula para buscar
+        $pos = mb_strpos($ABC, $C_lower, 0, 'UTF-8'); // buscamos posición de C en el alfabeto
+
+        if($pos !== false){
+            // m = C - [k mod A]
+            $m_index = ($pos - ($clave % $A) + $A) % $A;
+            $m_char = mb_substr($ABC, $m_index, 1, 'UTF-8');
+
+            // Conservamos mayúsculas si la letra original era mayúscula
+            $mensaje .= ctype_upper($C) ? mb_strtoupper($m_char, 'UTF-8') : $m_char;
+        } else {
+            // Si no es letra del alfabeto, se deja igual
+            $mensaje .= $C;
         }
     }
-    return $result;
+
+    return $mensaje; // Retornamos el mensaje descifrado
 }
 ?>
