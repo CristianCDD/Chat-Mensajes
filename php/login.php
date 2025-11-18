@@ -10,7 +10,8 @@ if (!empty($email) && !empty($password)) {
 
     if (mysqli_num_rows($sql) > 0) {
         $row = mysqli_fetch_assoc($sql);
-        $status = "Active now";
+        $status = "Activo ahora";
+
 
         $sql2 = mysqli_query($conn, "UPDATE users SET status = '{$status}' WHERE unique_id = {$row['unique_id']}");
 

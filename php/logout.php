@@ -6,7 +6,8 @@ if(isset($_SESSION['unique_id'])){
     $logout_id = mysqli_real_escape_string($conn, $_GET['logout_id']);
 
     if(isset($logout_id)){
-        $status = "Offline now";
+        $status = "Desconectado";
+
 
         $sql = mysqli_query($conn, "UPDATE users SET status = '{$status}' WHERE unique_id = {$logout_id}");
 

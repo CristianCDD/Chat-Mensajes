@@ -42,7 +42,7 @@ if (!isset($_SESSION['unique_id'])) {
                 <input type="text" hidden name="outgoing_id"  value="<?php echo $_SESSION['unique_id']; ?>"> <!-- Nuestor id  -->
                 <input type="text" hidden name="incoming_id"  value="<?php echo $user_id; ?>"> <!-- Id de la otra persona -->
 
-                <input type="text" name="message" class="input-field" placeholder="type a message here...">
+                <input type="text" name="message" class="input-field" placeholder="Escribe un mensaje ...">
                 <button><i class="fab fa-telegram-plane"></i></button>
             </form>
 

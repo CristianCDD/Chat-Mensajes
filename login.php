@@ -10,30 +10,30 @@ if(isset($_SESSION['unique_id'])){
 
     <div class="wrapper">
         <section class="form login">
-            <header>Realtime chat App</header>
+            <header>Feisbuk</header>
             <form action="#" method="POST" enctype="multipart/form-data" autocomplete="off">
                 <div class="error-text"></div>
                
 
                     <div class="field input">
-                        <label for="">Email Address</label>
-                        <input type="email" name="email" placeholder="Enter your email">
+                        <label for="">Correo electronico</label>
+                        <input type="email" name="email" placeholder="Ingrese su correo">
                     </div>
 
                     <div class="field input">
-                        <label for="">Password</label>
-                        <input type="password" name="password" placeholder="Enter your password">
+                        <label for="">Contraseña</label>
+                        <input type="password" name="password" placeholder="Ingrese su contraseña">
                         <i class="fas fa-eye"></i>
                     </div>
 
                   
 
                     <div class="field button">
-                        <input type="submit" value="Continue to chat">
+                        <input type="submit" value="Iniciar sesion">
                     </div>
                 
             </form>
-            <div class="link">Not yet signed up?<a href="index.php">Signup now</a></div>
+            <div class="link">¿Aún no te has registrado?<a href="index.php">Registrate ahora</a></div>
         </section>
     </div>
     

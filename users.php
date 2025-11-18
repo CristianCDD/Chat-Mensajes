@@ -33,11 +33,11 @@
             <p><?php echo $row['status'] ?></p>
           </div>
         </div>
-        <a href="php/logout.php?logout_id=<?php echo $row['unique_id'] ?> " class="logout">Logout</a>
+        <a href="php/logout.php?logout_id=<?php echo $row['unique_id'] ?> " class="logout">Cerrar sesión</a>
       </header>
       <div class="search">
-        <span class="text">Select an user to start chat</span>
-        <input type="text" placeholder="Enter name to search...">
+        <span class="text">Selecciona un usuario para chatear</span>
+        <input type="text" placeholder="Ingrese el nombre a buscar...">
         <button><i class="fas fa-search"></i></button>
       </div>
       <div class="users-list">

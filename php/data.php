@@ -17,11 +17,12 @@ while($row = mysqli_fetch_assoc($sql)){
 
     (strlen($result) > 26) ? $msg = substr($result, 0, 22). '....' : $msg = $result;
 
-    ($row2 && $outgoing_id == $row2['outgoing_msg_id']) ? $you = "You: " : $you = "";
+    ($row2 && $outgoing_id == $row2['outgoing_msg_id']) ? $you = "Tu: " : $you = "";
 
     //Chequear el estado "en linea"
 
-    ($row['status'] == "Offline now") ? $offline = "offline" : $offline = "";
+   ($row['status'] == "Desconectado") ? $offline = "offline" : $offline = "";
+
 
 
 

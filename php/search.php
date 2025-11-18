@@ -1,22 +1,27 @@
 <?php
-    session_start();
+session_start();
 
-    include_once "config.php";
-    $outgoing_id = $_SESSION['unique_id'];
-    $searchTerm = mysqli_real_escape_string($conn, $_POST['searchTerm']);
+if(!isset($_SESSION['unique_id'])){
+    header("Location: ../login.php");
+    exit();
+}
 
-    $output = "";
+include_once "config.php";
 
-    $sql = mysqli_query($conn, "SELECT * FROM users where not unique_id = {$outgoing_id}  and ( fname LIKE '%{$searchTerm}%' OR lname like '%{$searchTerm}%')");
+$outgoing_id = $_SESSION['unique_id'];
+$searchTerm = mysqli_real_escape_string($conn, $_POST['searchTerm']);
+$output = "";
 
-    if(mysqli_num_rows($sql) > 0){
-       include("data.php");
-    }else{
-        $output .= "No se encontro ningun usuario";
+// Buscar usuarios que no sean el actual y coincidan con nombre o apellido
+$sql = mysqli_query($conn, "SELECT * FROM users 
+                            WHERE unique_id != {$outgoing_id} 
+                              AND (fname LIKE '%{$searchTerm}%' OR lname LIKE '%{$searchTerm}%')");
 
-    }
+if(mysqli_num_rows($sql) > 0){
+    include("data.php"); // Se espera que aquí se genere $output
+} else {
+    $output = "No se encontró ningún usuario con ese nombre.";
+}
 
-    echo $output;
-
-    
+echo $output;
 ?>
