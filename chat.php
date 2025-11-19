@@ -6,6 +6,7 @@ if (!isset($_SESSION['unique_id'])) {
 }
 ?>
 <?php include_once "header.php";  ?>
+<?php include_once "php/cesar.php"; ?>
 
 <body>
 
@@ -28,7 +29,7 @@ if (!isset($_SESSION['unique_id'])) {
                 <a href="users.php" class="back-icon"><i class="fas fa-arrow-left"></i></a>
                 <img src="php/images/<?php echo $row['img'] ?>" alt="">
                 <div class="details">
-                    <span><?php echo $row['fname'] . " " . $row['lname'] ?></span>
+                    <span><?php echo cesar_decrypt($row['fname']) . " " . cesar_decrypt($row['lname']); ?></span>
                     <p><?php echo $row['status'] ?></p>
                 </div>
             </header>

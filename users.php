@@ -7,7 +7,7 @@
 ?>
 
 <?php include_once "header.php";  ?>
-
+<?php include_once "php/cesar.php"; ?>
 <body>
 
 <div class="wrapper">
@@ -29,7 +29,7 @@
          
           <img src="php/images/<?php echo $row['img'] ?>" alt="">
           <div class="details">
-            <span><?php echo $row['fname'] . " " . $row['lname'] ?> </span>
+            <span><?php echo cesar_decrypt($row['fname']) . " " . cesar_decrypt($row['lname']); ?> </span>
             <p><?php echo $row['status'] ?></p>
           </div>
         </div>
@@ -53,3 +53,5 @@
 </body>
 
 </html>
+
+

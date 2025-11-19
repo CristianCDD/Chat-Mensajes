@@ -5,14 +5,15 @@
 // Alfabeto español (27 letras: incluye ñ)
 // ================================
 $ABC = "abcdefghijklmnñopqrstuvwxyz";
+$clave_cesar = 6; // Cambia este valor para ajustar la clave en cifrado y descifrado
 $A = mb_strlen($ABC, 'UTF-8'); // Tamaño del alfabeto: 27
 
 // ================================
 // Función de cifrado César
 // Fórmula: C = m + [k mod A]
 // ================================
-function cesar_encrypt($mensaje, $clave = 5){
-    global $ABC, $A;
+function cesar_encrypt($mensaje){
+    global $ABC, $A, $clave_cesar; // Usamos la clave global
     $C = ""; // Variable donde se guardará el mensaje cifrado
 
     // Recorremos cada carácter del mensaje
@@ -22,8 +23,8 @@ function cesar_encrypt($mensaje, $clave = 5){
         $pos = mb_strpos($ABC, $m_lower, 0, 'UTF-8'); // buscamos posición de m en el alfabeto
 
         if($pos !== false){
-            // C = m + [k mod A]
-            $C_index = ($pos + ($clave % $A)) % $A;
+            // C = m + [clave_cesar mod A]
+            $C_index = ($pos + ($clave_cesar % $A)) % $A;
             $C_char = mb_substr($ABC, $C_index, 1, 'UTF-8');
 
             // Conservamos mayúsculas si la letra original era mayúscula
@@ -41,8 +42,8 @@ function cesar_encrypt($mensaje, $clave = 5){
 // Función de descifrado César
 // Fórmula: m = C - [k mod A]
 // ================================
-function cesar_decrypt($C_text, $clave = 5){
-    global $ABC, $A;
+function cesar_decrypt($C_text){
+    global $ABC, $A, $clave_cesar; // Usamos la misma clave global
     $mensaje = ""; // Variable donde se guardará el mensaje descifrado
 
     // Recorremos cada carácter del mensaje cifrado
@@ -52,8 +53,8 @@ function cesar_decrypt($C_text, $clave = 5){
         $pos = mb_strpos($ABC, $C_lower, 0, 'UTF-8'); // buscamos posición de C en el alfabeto
 
         if($pos !== false){
-            // m = C - [k mod A]
-            $m_index = ($pos - ($clave % $A) + $A) % $A;
+            // m = C - [clave_cesar mod A]
+            $m_index = ($pos - ($clave_cesar % $A) + $A) % $A;
             $m_char = mb_substr($ABC, $m_index, 1, 'UTF-8');
 
             // Conservamos mayúsculas si la letra original era mayúscula
@@ -67,3 +68,5 @@ function cesar_decrypt($C_text, $clave = 5){
     return $mensaje; // Retornamos el mensaje descifrado
 }
 ?>
+
+
