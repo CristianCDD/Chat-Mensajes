@@ -1,72 +1,120 @@
 <?php
-// php/cesar.php
-
-// ================================
-// Alfabeto español (27 letras: incluye ñ)
-// ================================
+// Alfabeto que se usará para cifrar y descifrar (solo minúsculas)
 $ABC = "abcdefghijklmnñopqrstuvwxyz";
-$clave_cesar = 6; // Cambia este valor para ajustar la clave en cifrado y descifrado
-$A = mb_strlen($ABC, 'UTF-8'); // Tamaño del alfabeto: 27
+$A = mb_strlen($ABC, 'UTF-8');
 
-// ================================
-// Función de cifrado César
-// Fórmula: C = m + [k mod A]
-// ================================
-function cesar_encrypt($mensaje){
-    global $ABC, $A, $clave_cesar; // Usamos la clave global
-    $C = ""; // Variable donde se guardará el mensaje cifrado
-
-    // Recorremos cada carácter del mensaje
-    for($i = 0; $i < mb_strlen($mensaje, 'UTF-8'); $i++){
-        $m = mb_substr($mensaje, $i, 1, 'UTF-8'); // letra actual
-        $m_lower = mb_strtolower($m, 'UTF-8');    // convertimos a minúscula para buscar
-        $pos = mb_strpos($ABC, $m_lower, 0, 'UTF-8'); // buscamos posición de m en el alfabeto
-
-        if($pos !== false){
-            // C = m + [clave_cesar mod A]
-            $C_index = ($pos + ($clave_cesar % $A)) % $A;
-            $C_char = mb_substr($ABC, $C_index, 1, 'UTF-8');
-
-            // Conservamos mayúsculas si la letra original era mayúscula
-            $C .= ctype_upper($m) ? mb_strtoupper($C_char, 'UTF-8') : $C_char;
-        } else {
-            // Si no es letra del alfabeto, se deja igual
-            $C .= $m;
-        }
-    }
-
-    return $C; // Retornamos el mensaje cifrado
+// Función para convertir mensaje y clave a minúsculas
+function normalize($str){
+    return mb_strtolower($str, 'UTF-8');
 }
 
-// ================================
-// Función de descifrado César
-// Fórmula: m = C - [k mod A]
-// ================================
-function cesar_decrypt($C_text){
-    global $ABC, $A, $clave_cesar; // Usamos la misma clave global
-    $mensaje = ""; // Variable donde se guardará el mensaje descifrado
+// Función Vigenère simple (cifrar)
+function vigenere_encrypt($mensaje, $clave){
+    global $ABC, $A;
+    $mensaje = normalize($mensaje);
+    $clave = normalize($clave);
 
-    // Recorremos cada carácter del mensaje cifrado
-    for($i = 0; $i < mb_strlen($C_text, 'UTF-8'); $i++){
-        $C = mb_substr($C_text, $i, 1, 'UTF-8'); // letra cifrada
-        $C_lower = mb_strtolower($C, 'UTF-8');    // convertimos a minúscula para buscar
-        $pos = mb_strpos($ABC, $C_lower, 0, 'UTF-8'); // buscamos posición de C en el alfabeto
+    $res = "";
+    $len_clave = mb_strlen($clave, 'UTF-8');
+
+    for($i = 0, $j = 0; $i < mb_strlen($mensaje, 'UTF-8'); $i++){
+        $m = mb_substr($mensaje, $i, 1, 'UTF-8');
+        $pos = mb_strpos($ABC, $m);
 
         if($pos !== false){
-            // m = C - [clave_cesar mod A]
-            $m_index = ($pos - ($clave_cesar % $A) + $A) % $A;
-            $m_char = mb_substr($ABC, $m_index, 1, 'UTF-8');
-
-            // Conservamos mayúsculas si la letra original era mayúscula
-            $mensaje .= ctype_upper($C) ? mb_strtoupper($m_char, 'UTF-8') : $m_char;
+            $k = mb_substr($clave, $j % $len_clave, 1, 'UTF-8');
+            $k_pos = mb_strpos($ABC, $k);
+            $res .= mb_substr($ABC, ($pos + $k_pos) % $A, 1, 'UTF-8');
+            $j++;
         } else {
-            // Si no es letra del alfabeto, se deja igual
-            $mensaje .= $C;
+            $res .= $m;
         }
     }
 
-    return $mensaje; // Retornamos el mensaje descifrado
+    return $res;
+}
+
+// Función Vigenère inversa (descifrar)
+function vigenere_decrypt($mensaje, $clave){
+    global $ABC, $A;
+    $mensaje = normalize($mensaje);
+    $clave = normalize($clave);
+
+    $res = "";
+    $len_clave = mb_strlen($clave, 'UTF-8');
+
+    for($i = 0, $j = 0; $i < mb_strlen($mensaje, 'UTF-8'); $i++){
+        $m = mb_substr($mensaje, $i, 1, 'UTF-8');
+        $pos = mb_strpos($ABC, $m);
+
+        if($pos !== false){
+            $k = mb_substr($clave, $j % $len_clave, 1, 'UTF-8');
+            $k_pos = mb_strpos($ABC, $k);
+            $res .= mb_substr($ABC, ($pos - $k_pos + $A) % $A, 1, 'UTF-8');
+            $j++;
+        } else {
+            $res .= $m;
+        }
+    }
+
+    return $res;
+}
+
+// Función César simple (cifrar +2)
+function cesar_encrypt_shift($mensaje, $shift = 2){
+    global $ABC, $A;
+    $res = "";
+    for($i = 0; $i < mb_strlen($mensaje, 'UTF-8'); $i++){
+        $m = mb_substr($mensaje, $i, 1, 'UTF-8');
+        $pos = mb_strpos($ABC, $m);
+        if($pos !== false){
+            $res .= mb_substr($ABC, ($pos + $shift) % $A, 1, 'UTF-8');
+        } else {
+            $res .= $m;
+        }
+    }
+    return $res;
+}
+
+// Función César inversa (-2)
+function cesar_decrypt_shift($mensaje, $shift = 2){
+    global $ABC, $A;
+    $res = "";
+    for($i = 0; $i < mb_strlen($mensaje, 'UTF-8'); $i++){
+        $m = mb_substr($mensaje, $i, 1, 'UTF-8');
+        $pos = mb_strpos($ABC, $m);
+        if($pos !== false){
+            $res .= mb_substr($ABC, ($pos - $shift + $A) % $A, 1, 'UTF-8');
+        } else {
+            $res .= $m;
+        }
+    }
+    return $res;
+}
+
+// Función total de cifrado: Vigenère → César+2 → Vigenère
+function cesar_encrypt($mensaje, $clave = "clave"){
+    $tmp1 = vigenere_encrypt($mensaje, $clave);
+    $tmp2 = cesar_encrypt_shift($tmp1, 2);
+    $tmp3 = vigenere_encrypt($tmp2, $clave);
+    return $tmp3;
+}
+
+// Función total de descifrado: Vigenère inversa → César-2 → Vigenère inversa
+function cesar_decrypt($mensaje, $clave = "clave"){
+    $tmp1 = vigenere_decrypt($mensaje, $clave);
+    $tmp2 = cesar_decrypt_shift($tmp1, 2);
+    $tmp3 = vigenere_decrypt($tmp2, $clave);
+    return $tmp3;
+}
+
+// Función total de cifrado
+function encrypt_total($mensaje, $clave = "clave"){
+    return cesar_encrypt($mensaje, $clave);
+}
+
+// Función total de descifrado
+function decrypt_total($mensaje_cifrado, $clave = "clave"){
+    return cesar_decrypt($mensaje_cifrado, $clave);
 }
 ?>
-
-
