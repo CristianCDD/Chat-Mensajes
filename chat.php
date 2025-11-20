@@ -39,13 +39,17 @@ if (!isset($_SESSION['unique_id'])) {
                 
             </div>
 
-            <form action="#" class="typing-area" autocomplete="off">
-                <input type="text" hidden name="outgoing_id"  value="<?php echo $_SESSION['unique_id']; ?>"> <!-- Nuestor id  -->
-                <input type="text" hidden name="incoming_id"  value="<?php echo $user_id; ?>"> <!-- Id de la otra persona -->
+          <form action="php/insert-chat.php" class="typing-area" autocomplete="off" enctype="multipart/form-data">
+    <input type="text" hidden name="outgoing_id" value="<?php echo $_SESSION['unique_id']; ?>">
+    <input type="text" hidden name="incoming_id" value="<?php echo $user_id; ?>">
+    
+    <input type="text" name="message" class="input-field" placeholder="Escribe un mensaje ...">
+    <input type="file" name="file_upload" accept=".doc,.docx">
+    
+    <button><i class="fab fa-telegram-plane"></i></button>
+</form>
 
-                <input type="text" name="message" class="input-field" placeholder="Escribe un mensaje ...">
-                <button><i class="fab fa-telegram-plane"></i></button>
-            </form>
+
 
         </section>
     </div>
